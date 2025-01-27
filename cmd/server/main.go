@@ -58,14 +58,17 @@ func setupRouter(telemetryHandler *telemetry.Handler) *chi.Mux {
 		http.Redirect(w, r, "https://github.com/bo0st3r", http.StatusFound)
 	})
 
+	// Health check endpoint remains at root for easier monitoring
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("I'm fine sir!!"))
 	})
 
-	r.Get("/telemetry", telemetryHandler.GetAll)
-	r.Post("/telemetry", telemetryHandler.Create)
-
-	r.Get("/telemetry/peak", telemetryHandler.GetHighestValuePerMetric)
+	// Group v1 routes
+	r.Route("/v1", func(r chi.Router) {
+		r.Get("/telemetry", telemetryHandler.GetAll)
+		r.Post("/telemetry", telemetryHandler.Create)
+		r.Get("/telemetry/peak", telemetryHandler.GetHighestValuePerMetric)
+	})
 
 	return r
 }
