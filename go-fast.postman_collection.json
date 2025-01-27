@@ -1,0 +1,50 @@
+{
+	"info": {
+		"_postman_id": "21b6512b-5c1c-44c8-ab54-fb113eea5db1",
+		"name": "go-fast",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16741382"
+	},
+	"item": [
+		{
+			"name": "telemetry",
+			"item": [
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"metric\": \"nb_players\",\n    \"value\": 5\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/telemetry",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"telemetry"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
