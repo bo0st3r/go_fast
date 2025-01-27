@@ -20,15 +20,20 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("Error loading .env file")
 	}
-	config := config.Load()
-	log.Println("Config loaded.")
+	log.Println("Loaded .env file")
+
+	config, err := config.Load()
+	if err != nil {
+		log.Fatal("Error loading config:", err)
+	}
+	log.Println("Config loaded")
 
 	db_connection, err := db.Connect(config.DatabaseDSN)
 	if err != nil {
 		log.Fatal("Error connecting to DB!", err)
 	}
 	defer db_connection.Close()
-	log.Println("Connected to DB.")
+	log.Println("Connected to the SOURCE")
 
 	telemetryRepository := telemetry.NewRepository(db_connection)
 	telemetryService := telemetry.NewService(telemetryRepository)
@@ -36,8 +41,8 @@ func main() {
 
 	r := setupRouter(telemetryHandler)
 
-	http.ListenAndServe(":8080", r)
-	log.Println("She's ready!")
+	log.Printf("Guys at %s are about to be ready to serve you", config.Port)
+	http.ListenAndServe(":"+config.Port, r)
 }
 
 func setupRouter(telemetryHandler *telemetry.Handler) *chi.Mux {
