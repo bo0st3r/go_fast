@@ -13,6 +13,24 @@ func NewHandler(service *Service) *Handler {
 	return &Handler{service: service}
 }
 
+func (handler *Handler) GetHighestValuePerMetric(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	metrics, err := handler.service.GetHighestValuePerMetric()
+	if err != nil {
+		http.Error(w, "failed to get telemetry", http.StatusInternalServerError)
+		return
+	}
+
+	if len(metrics) == 0 {
+		metrics = []Metric{}
+	}
+
+	if err := json.NewEncoder(w).Encode(metrics); err != nil {
+		http.Error(w, "failed to encode response: "+err.Error(), http.StatusInternalServerError)
+	}
+}
+
 func (handler *Handler) GetAll(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -23,7 +41,7 @@ func (handler *Handler) GetAll(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(entries) == 0 {
-		entries = []Entry{}
+		entries = []Metric{}
 	}
 
 	if err := json.NewEncoder(w).Encode(entries); err != nil {
@@ -33,7 +51,7 @@ func (handler *Handler) GetAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func (handler *Handler) Create(w http.ResponseWriter, r *http.Request) {
-	var payload Entry
+	var payload Metric
 
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		http.Error(w, "invalid request", http.StatusBadRequest)
@@ -45,7 +63,7 @@ func (handler *Handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := handler.service.Create(Entry{Metric: payload.Metric, Value: payload.Value}); err != nil {
+	if err := handler.service.Create(Metric{Metric: payload.Metric, Value: payload.Value}); err != nil {
 		http.Error(w, "failed to record telemetry", http.StatusInternalServerError)
 		return
 	}

@@ -65,5 +65,7 @@ func setupRouter(telemetryHandler *telemetry.Handler) *chi.Mux {
 	r.Get("/telemetry", telemetryHandler.GetAll)
 	r.Post("/telemetry", telemetryHandler.Create)
 
+	r.Get("/telemetry/peak", telemetryHandler.GetHighestValuePerMetric)
+
 	return r
 }

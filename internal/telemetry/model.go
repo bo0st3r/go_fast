@@ -2,7 +2,7 @@ package telemetry
 
 import "time"
 
-type Entry struct {
+type Metric struct {
 	ID        int       `json:"id"`
 	Metric    string    `json:"metric"`
 	Value     float64   `json:"value"`
